@@ -11,7 +11,7 @@
 ```
 **2.** The restaurant revisted
 
-* Mirar archivo alejas_restaurant_revisted.py
+* Mirar archivo restaurant_mejorado.py
 
 ```python
 class MenuItem:
