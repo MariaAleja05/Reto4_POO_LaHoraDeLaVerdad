@@ -4,7 +4,7 @@
 
 **1.** Class exercise:
 
-* Mirar archivo ejercicio_en_clase_2.py
+* Mirar archivo Figuritas_y_sus_hijos.py
 
 ```python
 import math
