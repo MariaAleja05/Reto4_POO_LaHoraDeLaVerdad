@@ -13,12 +13,24 @@ class Point:
     definition = "Abstract geometric entity that represents a location in space."
 
     def __init__(self, x:float, y:float):
-        self.x = x  # Coordenada x del punto
-        self.y = y  # Coordenada y del punto
+        self._x = x  # Coordenada x del punto
+        self._y = y  # Coordenada y del punto
+    
+    def get_x(self):  # Getter x
+        return self._x
+
+    def set_x(self, x: float):  # Setter x
+        self._x = x
+
+    def get_y(self):  # Getter y
+        return self._y
+
+    def set_y(self, y: float):  # Setter y
+        self._y = y
 
     def compute_distance(self, start_point, end_point):
         # Calcula la distancia entre dos puntos utilizando la fórmula de distancia euclidiana
-        distance = math.sqrt((start_point.x - end_point.x) ** 2 + (start_point.y - end_point.y) ** 2)
+        distance = math.sqrt((start_point.get_x() - end_point.get_x()) ** 2 + (start_point.get_y() - end_point.get_y()) ** 2)
         return distance
     
 class Line:
@@ -27,8 +39,8 @@ class Line:
         self.end_point = end_point  # Punto final de la línea
         self.length = start_point.compute_distance(start_point, end_point)  # Longitud de la línea
         
-        delta_x = self.end_point.x - self.start_point.x
-        delta_y = self.end_point.y - self.start_point.y
+        delta_x = self.end_point.get_x() - self.start_point.get_x()
+        delta_y = self.end_point.get_y() - self.start_point.get_y()
         
         if delta_x != 0: 
             self.slope = delta_y / delta_x  # Pendiente de la línea si no es vertical
