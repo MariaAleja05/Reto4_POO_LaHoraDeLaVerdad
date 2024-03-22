@@ -7,7 +7,162 @@
 * Mirar archivo ejercicio_en_clase_2.py
 
 ```python
+import math
 
+class Point:
+    definition = "Abstract geometric entity that represents a location in space."
+
+    def __init__(self, x:float, y:float):
+        self.x = x
+        self.y = y
+
+    def compute_distance(self, start_point, end_point):
+        distance = math.sqrt((start_point.x - end_point.x) ** 2 + (start_point.y - end_point.y) ** 2)
+        return distance
+    
+class Line:
+    def __init__(self, start_point:Point, end_point:Point):
+        self.start_point = start_point
+        self.end_point = end_point
+        self.length = start_point.compute_distance(start_point, end_point)
+        
+        delta_x = self.end_point.x - self.start_point.x
+        delta_y = self.end_point.y - self.start_point.y
+        
+        if delta_x != 0: 
+            self.slope = delta_y/delta_x
+
+class Shape:
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        self.is_regular = is_regular 
+        self.vertices =  vertices
+        self.edges=edges
+        self.inner_angles=inner_angles
+
+    def compute_edges(self):
+        self.edges = []
+        for i in range(len(self.vertices)):
+            start_point = self.vertices[i]
+            end_point = self.vertices[(i+1)%len(self.vertices)] # Para que en la lista se una el ultimo punto con el primero
+            line = Line(start_point, end_point)
+            self.edges.append(line.length)
+        return self.edges
+    
+    def compute_inner_angles(self):
+        pass
+
+    def compute_perimeter(self):
+        pass
+
+    def compute_area(self):
+        pass
+
+class Triangle(Shape):                
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        super().__init__(is_regular, vertices, edges, inner_angles)
+    
+    # Ya esta heredando compute_edges y es el mismo, no es necesario volverlo a copiar
+    
+    def compute_inner_angles(self):
+        if len(self.edges)==3:
+            a, b, c = self.edges  # Lados del triángulo
+            angulo_a = math.acos((b**2 + c**2 - a**2) / (2 * b * c))
+            angulo_b = math.acos((a**2 + c**2 - b**2) / (2 * a * c))
+            angulo_c = math.pi - angulo_a - angulo_b  # El ángulo restante
+            self.inner_angles = [math.degrees(angulo_a), math.degrees(angulo_b), math.degrees(angulo_c)]
+        return self.inner_angles
+
+    def compute_perimeter(self):
+        if len(self.edges)==3:
+            self.perimeter = sum(self.edges)
+        return self.perimeter
+
+    def compute_area(self):
+        pass
+        
+class Rectangle(Shape):                  
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        super().__init__(is_regular, vertices, edges, inner_angles)
+
+    # Ya esta heredando compute_edges y es el mismo, no es necesario volverlo a copiar
+    
+    def compute_inner_angles(self):
+        if len(self.edges)==4:
+            self.inner_angles = [90, 90, 90, 90]
+        return self.inner_angles
+    
+    def compute_perimeter(self):
+        if len(self.edges)==4:
+            self.perimeter = sum(self.edges)
+        return self.perimeter
+
+    def compute_area(self, base, altura):
+        if len(self.edges)==4:
+            base = max(self.edges)
+            altura = min(self.edges)
+            self.area = (base*altura)
+        return self.area
+
+class Square(Rectangle):             
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        super().__init__(is_regular, vertices, edges, inner_angles)
+    
+    # Hereda todas las funciones y le sirve esa misma
+    
+class Isosceles(Triangle):              # Hereda de Triangle
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        super().__init__(is_regular, vertices, edges, inner_angles)
+    
+    # La función def compute_inner_angles se hereda y funciona
+    # La función def compute_perimeter se hereda y funciona
+    
+    def compute_area(self):
+        if len(self.edges)==3:
+            altura = math.sqrt((self.edges[0])**2 - ((self.edges[1])**2/4))
+            self.area = 0.5 * self.edges[1] * altura
+        return self.area
+
+class Equilateral(Triangle):              # Hereda de Triangle
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        super().__init__(is_regular, vertices, edges, inner_angles)
+    
+    # La función def compute_inner_angles se hereda y funciona
+    # La función def compute_perimeter se hereda y funciona
+    
+    def compute_area(self):
+        if len(self.edges)==3:
+            area = (math.sqrt(3) / 4)*(self.edges[0]**2)
+        return area
+
+class Scalene(Triangle):
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        super().__init__(is_regular, vertices, edges, inner_angles)
+    
+    # La función def compute_inner_angles se hereda y funciona
+    # La función def compute_perimeter se hereda y funciona
+    
+    def compute_area(self):
+        if len(self.edges)==3:
+            semiperimetro = sum(self.edges)/2
+            area = math.sqrt(semiperimetro*(semiperimetro-self.edges[0])*(semiperimetro-self.edges[1])*(semiperimetro-self.edges[2]))
+        return area
+
+class Rectangle(Triangle):
+    def __init__(self,  is_regular:bool, vertices:list, edges:list, inner_angles:list):
+        super().__init__(is_regular, vertices, edges, inner_angles)
+    
+    # La función def compute_inner_angles se hereda y funciona
+    # La función def compute_perimeter se hereda y funciona
+    
+    def compute_area(self):
+        if len(self.edges)==3:
+            base = self.edges[0]
+            altura = self.edges[1]
+            self.area=0.5*base*altura
+        return self.area
+
+if __name__ == "__main__": # Función main
+    
 ```
 **2.** The restaurant revisted
 
