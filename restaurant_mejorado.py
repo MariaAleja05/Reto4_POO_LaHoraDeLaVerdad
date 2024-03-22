@@ -1,46 +1,61 @@
+# Definición de la clase MenuItem para representar elementos del menú con nombre y precio
 class MenuItem:
     def __init__(self, name, price):
-        self._name = name  # Protegido
-        self._price = price
+        self._name = name  # Nombre del elemento del menú (protegido)
+        self._price = price  # Precio del elemento del menú
 
+    # Método para obtener el nombre del elemento del menú
     def get_name(self):
         return self._name
 
+    # Método para establecer el nombre del elemento del menú
     def set_name(self, name):
         self._name = name
 
+    # Método para obtener el precio del elemento del menú
     def get_price(self):
         return self._price
 
+    # Método para establecer el precio del elemento del menú
     def set_price(self, price):
         self._price = price
 
+# Definición de la clase MedioPago para representar diferentes métodos de pago
 class MedioPago:
     def __init__(self):
         pass
 
+    # Método abstracto para realizar un pago con un monto específico
     def pagar(self, monto):
         pass
 
+# Definición de la clase Tarjeta que hereda de MedioPago y representa el pago con tarjeta
 class Tarjeta(MedioPago):
     def __init__(self, numero, cvv):
         super().__init__()
-        self.numero = numero
-        self.cvv = cvv
+        self.numero = numero  # Número de tarjeta
+        self.cvv = cvv  # Código CVV de la tarjeta
 
+    # Método para realizar un pago con la tarjeta
     def pagar(self, monto):
-        print(f"Pagando {monto} con tarjeta {self.numero[-4:]}")
+        print(f"Pagando {monto} con tarjeta {self.numero[-4:]}")  # Se muestra el monto y los últimos 4 dígitos de la tarjeta
 
+# Definición de la clase Efectivo que hereda de MedioPago y representa el pago en efectivo
 class Efectivo(MedioPago):
     def __init__(self, monto_entregado):
         super().__init__()
-        self.monto_entregado = monto_entregado
+        self.monto_entregado = monto_entregado  # Monto entregado en efectivo
 
+    # Método para realizar un pago en efectivo
     def pagar(self, monto):
-        if self.monto_entregado >= monto:
-            print(f"Pago realizado en efectivo. Cambio: {self.monto_entregado - monto}")
-        else:
-            print(f"Fondos insuficientes. Faltan {monto - self.monto_entregado} para completar el pago.")
+        if self.monto_entregado >= monto:  # Si el monto entregado es suficiente para cubrir el pago
+            print(f"Pago realizado en efectivo. Cambio: {self.monto_entregado - monto}")  # Se muestra el cambio
+        else:  # Si el monto entregado es insuficiente
+            print(f"Fondos insuficientes. Faltan {monto - self.monto_entregado} para completar el pago.")  # Se muestra la cantidad faltante
+
+# Definición de las clases para diferentes elementos del menú (Appetizer, MainCourse, SideDish, Dessert, Beverage),
+# que heredan de MenuItem y representan elementos específicos del menú con sus precios
+# y métodos para seleccionar el elemento y obtener su precio
 
 class Appetizer(MenuItem):
     def __init__(self, name):
@@ -137,13 +152,16 @@ class Beverage(MenuItem):
         else:
             return 0
 
+# Definición de la clase Order para representar una orden con una lista de elementos, precios, y método de pago
 class Order:
     def __init__(self):
-        self.items = []
-        self.prices = []
-        self.medio_pago = None
+        self.items = []  # Lista de elementos de la orden
+        self.prices = []  # Lista de precios de los elementos de la orden
+        self.medio_pago = None  # Método de pago para la orden
 
-    def show_menu(self):  # Se muestra el menu
+    # Método para mostrar el menú disponible
+    def show_menu(self):
+        # Se imprime el menú con los elementos y precios disponibles
         print("Alejas Restaurant")
 
         print("\nAppetizer:")
@@ -183,7 +201,10 @@ class Order:
 
         print("\n")
 
+     # Método para tomar la orden de los clientes, agregar elementos a la orden y calcular los precios
     def order_items(self):
+        # Se solicita la cantidad y los elementos de cada tipo del menú al cliente, se crean los objetos correspondientes
+        # y se agregan a la orden junto con sus precios calculados
         items = self.items
         prices = self.prices
 
@@ -227,20 +248,27 @@ class Order:
             price = beverage.item_selected()
             prices.append(price)
 
+    # Método para establecer el método de pago para la orden
     def set_medio_pago(self, medio_pago):
-        self.medio_pago = medio_pago
+        self.medio_pago = medio_pago  # Se asigna el método de pago proporcionado a la orden
 
+    # Método para calcular el total de la orden
     def calculate_total_bill(self):
-        return sum(self.prices)
+        return sum(self.prices)  # Se suma el total de los precios de los elementos en la orden
 
+    # Método para aplicar descuentos a la orden según ciertas condiciones
     def discounts(self):
+        # Se calcula el total de la orden y se aplica un descuento del 5% si se cumplen ciertas condiciones
         total_bill = self.calculate_total_bill()
         if self.quantity_maincourse >= 2 and self.quantity_dessert>=1:
             return total_bill - ((total_bill * 5) / 100)
         else:
             return total_bill 
 
+     # Método para imprimir la factura de la orden con los elementos, precios, total y método de pago
     def print_bill(self):
+        # Se imprime la factura con los elementos de la orden, precios individuales, total, descuentos (si aplican)
+        # y se muestra el método de pago utilizado en la orden
         items = self.items
         total_bill = self.calculate_total_bill()
         discounts = self.discounts()
@@ -312,24 +340,25 @@ class Order:
             print("\n")
             self.medio_pago.pagar(total_bill)
 
-my_order = Order()
-my_order.show_menu()
-my_order.order_items()
-print("\n")
+if __name__ == "__main__": # Función main
+    my_order = Order()
+    my_order.show_menu()
+    my_order.order_items()
+    print("\n")
 
-while True:
-    metodo_pago = input("Select payment method (1 for Cash, 2 for Card): ")
-    if metodo_pago == '1':
-        monto_entregado = float(input("Enter the amount of cash provided: "))
-        my_order.set_medio_pago(Efectivo(monto_entregado))
-        break
-    elif metodo_pago == '2':
-        numero_tarjeta = input("Enter the card number: ")
-        cvv_tarjeta = input("Enter the CVV code: ")
-        my_order.set_medio_pago(Tarjeta(numero_tarjeta, cvv_tarjeta))
-        break
-    else:
-        print("Invalid option. Please try again.")
+    while True:
+        metodo_pago = input("Select payment method (1 for Cash, 2 for Card): ")
+        if metodo_pago == '1':
+            monto_entregado = float(input("Enter the amount of cash provided: "))
+            my_order.set_medio_pago(Efectivo(monto_entregado))
+            break
+        elif metodo_pago == '2':
+            numero_tarjeta = input("Enter the card number: ")
+            cvv_tarjeta = input("Enter the CVV code: ")
+            my_order.set_medio_pago(Tarjeta(numero_tarjeta, cvv_tarjeta))
+            break
+        else:
+            print("Invalid option. Please try again.")
 
-print("\n")
-my_order.print_bill()
+    print("\n")
+    my_order.print_bill()
